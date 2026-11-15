@@ -1,4 +1,3 @@
-
 package com.taquiya.dao;
 
 import com.taquiya.modelo.Concierto;
@@ -11,12 +10,17 @@ import java.util.List;
 
 public class ConciertoDAO {
 
-    // Próximos conciertos (consulta 2)
+    //PROXIMOS CONCIERTOS CON SUS GRUPOS 
     public List<Concierto> listarProximos() {
         List<Concierto> lista = new ArrayList<>();
-        String sql = "select c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad " //ESTA ES LA CONSULTA QUE HICIMOS EN EL SCRIPT
+        String sql = "select c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad, "
+                   + "group_concat(g.nombre separator ', ') as grupos "    
                    + "from concierto c join lugar l on c.id_lugar = l.id_lugar "
-                   + "where c.fecha >= curdate() order by c.fecha";
+                   + "join toca t on t.id_concierto = c.id_concierto "
+                   + "join grupo g on g.id_grupo = t.id_grupo "
+                   + "where c.fecha >= curdate() "
+                   + "group by c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad "  
+                   + "order by c.fecha";
 
         try (Connection con = ConexionBD.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -28,7 +32,8 @@ public class ConciertoDAO {
                     rs.getString("fecha"),
                     rs.getString("hora"),
                     rs.getString("nombre"),
-                    rs.getString("ciudad")
+                    rs.getString("ciudad"),
+                    rs.getString("grupos")
                 ));
             }
         } catch (SQLException e) {
@@ -36,19 +41,23 @@ public class ConciertoDAO {
         }
         return lista;
     }
-    
-        // BUSCAR CONCIERTOS POR CIUDAD
+
+    //BUSCAR CONCIERTOS POR CIUDAD CON SUS GRUPOS
     public List<Concierto> buscarPorCiudad(String ciudad) {
         List<Concierto> lista = new ArrayList<>();
-        String sql = "select c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad "
+        String sql = "select c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad, "
+                   + "group_concat(g.nombre separator ', ') as grupos "
                    + "from concierto c join lugar l on c.id_lugar = l.id_lugar "
-                   + "where c.fecha >= curdate() and l.ciudad = ? "    
+                   + "join toca t on t.id_concierto = c.id_concierto "
+                   + "join grupo g on g.id_grupo = t.id_grupo "
+                   + "where c.fecha >= curdate() and l.ciudad = ? "
+                   + "group by c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad "
                    + "order by c.fecha";
 
         try (Connection con = ConexionBD.conectar();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1,ciudad);                                
+            ps.setString(1, ciudad);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 lista.add(new Concierto(
@@ -56,7 +65,8 @@ public class ConciertoDAO {
                     rs.getString("fecha"),
                     rs.getString("hora"),
                     rs.getString("nombre"),
-                    rs.getString("ciudad")
+                    rs.getString("ciudad"),
+                    rs.getString("grupos")
                 ));
             }
         } catch (SQLException e) {

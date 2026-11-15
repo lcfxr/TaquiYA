@@ -98,7 +98,7 @@ create table favorito(
 );
 
 
--- INSERCCION DE DATOS
+-- INSERCIÓN DE DATOS
 insert into usuario values
 ('11111111A', 'Nerea',  'García',  'Vergara', 'C/ Sierpes 1, Sevilla',              'nerea@correo.com',  611111111),
 ('22222222B', 'Lucía',  'López',   'Ruiz',    'C/ Feria 5, Sevilla',                'lucia@correo.com',  622222222),
@@ -202,24 +202,32 @@ select *
 from usuario
 where correo = 'nerea@correo.com';
 
--- Proximos conciertos del lugar
-select c.fecha, c.hora, l.nombre, l.ciudad
+-- Proximos conciertos con sus grupos
+select c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad,
+       group_concat(g.nombre separator ', ') as grupos
 from concierto c
 join lugar l on c.id_lugar = l.id_lugar
+join toca t  on t.id_concierto = c.id_concierto
+join grupo g on g.id_grupo = t.id_grupo
 where c.fecha >= curdate()
+group by c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad
 order by c.fecha;
 
--- Conciertos de una ciudad
-select c.fecha, c.hora, l.nombre, l.ciudad
+-- Conciertos de una ciudad con sus grupos
+select c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad,
+       group_concat(g.nombre separator ', ') as grupos
 from concierto c
 join lugar l on c.id_lugar = l.id_lugar
-where c.fecha >= curdate() and l.ciudad='Sevilla'
+join toca t  on t.id_concierto = c.id_concierto
+join grupo g on g.id_grupo = t.id_grupo
+where c.fecha >= curdate() and l.ciudad = 'Sevilla'
+group by c.id_concierto, c.fecha, c.hora, l.nombre, l.ciudad
 order by c.fecha;
 
 -- Tipos de entradas de un concierto
-select nombre, precio
+select id_tipo, nombre, precio
 from tipo_entrada
-where id_concierto= 'C3';
+where id_concierto = 'C3';
 
 -- Mis entradas
 select e.id_entrada, t.nombre as zona, c.fecha, l.nombre as lugar
@@ -272,3 +280,9 @@ begin
     insert into entrada values (v_id, 'V', p_id_tipo, p_dni, curdate(), v_precio);
     commit;
 end;
+
+
+-- USUARIO DE LA APLICACION
+-- La aplicacion Java se conecta con este usuario, que solo tiene permisos sobre taquiya
+create user if not exists 'taquiya'@'%' identified by 'taquiya123';
+grant all privileges on taquiya.* to 'taquiya'@'%';

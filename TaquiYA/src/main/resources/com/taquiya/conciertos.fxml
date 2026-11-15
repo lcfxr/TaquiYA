@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/26" fx:controller="com.taquiya.controlador.ConciertosController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.taquiya.controlador.ConciertosController">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <opaqueInsets>
@@ -25,6 +24,7 @@
             <Button mnemonicParsing="false" onAction="#buscar" text="BUSCAR" />
             <TableView fx:id="tablaConciertos" prefHeight="200.0" prefWidth="200.0">
               <columns>
+                  <TableColumn fx:id="colGrupos" prefWidth="200.0" text="Grupo" />
                 <TableColumn fx:id="colFecha" prefWidth="75.0" text="Fecha" />
                 <TableColumn fx:id="colHora" prefWidth="75.0" text="Hora" />
                   <TableColumn fx:id="colLugar" prefWidth="75.0" text="Lugar" />

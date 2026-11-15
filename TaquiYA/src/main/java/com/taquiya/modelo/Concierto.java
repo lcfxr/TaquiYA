@@ -9,15 +9,19 @@ public class Concierto {
     private String hora;
     private String lugar;
     private String ciudad;
+    private String grupos;
 
     //CONSTRUCTOR CON TODOS LOS ATRIBUTOS
-    public Concierto(String idConcierto, String fecha, String hora, String lugar, String ciudad) {
+
+    public Concierto(String idConcierto, String fecha, String hora, String lugar, String ciudad, String grupos) {
         this.idConcierto = idConcierto;
         this.fecha = fecha;
         this.hora = hora;
         this.lugar = lugar;
         this.ciudad = ciudad;
+        this.grupos = grupos;
     }
+    
 
     //GETTERS
     public String getIdConcierto() {
@@ -39,6 +43,11 @@ public class Concierto {
     public String getCiudad() {
         return ciudad;
     }
+
+    public String getGrupos() {
+        return grupos;
+    }
+    
     
     
 

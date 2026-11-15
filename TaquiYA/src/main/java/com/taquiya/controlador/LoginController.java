@@ -1,0 +1,46 @@
+package com.taquiya.controlador;
+
+import com.taquiya.App;
+import com.taquiya.dao.UsuarioDAO;
+import com.taquiya.modelo.Sesion;
+import com.taquiya.modelo.Usuario;
+import java.io.IOException;
+import javafx.scene.control.Label;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
+
+public class LoginController implements Initializable {
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+    }
+
+    @FXML
+    private TextField txtCorreo;     //AÑADIMOS LO QUE HEMOS CREADO EN EL SCENEBUILDER
+    @FXML
+    private Label lblMensaje;
+
+    @FXML
+    private void entrar(ActionEvent event) {//METODO DEL BOTON ENTRAR
+        String correo = txtCorreo.getText();
+
+        UsuarioDAO dao = new UsuarioDAO();
+        Usuario usuario = dao.buscarPorCorreo(correo);
+
+        if (usuario == null) {
+            lblMensaje.setText("El usuario no existe");
+        } else {
+            Sesion.usuario = usuario; 
+            try {
+                App.setRoot("conciertos");
+            } catch (IOException e) {
+                lblMensaje.setText("Error al abrir la pantalla");
+            }
+        }
+    }
+
+}
